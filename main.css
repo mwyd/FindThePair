@@ -36,9 +36,15 @@ body {
 
 .board-field--reversed {
     transform: rotateY(180deg);
-    background-color: lightgray;
+    background-image: url('assets/reversed.png');
+    background-size: 100%;
 }
 
 #play-button {
     margin-top: 20px;
+}
+
+.icon-credits {
+    position: absolute;
+    top: 10px;
 }
