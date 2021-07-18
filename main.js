@@ -1,4 +1,7 @@
 const setupGame = (difficulty = 0) => {
+    const timer = document.querySelector('#timer-mutable')
+    timer.innerText = '00:00:00'
+
     const board = document.querySelector('#board')
     board.innerHTML = ''
 
@@ -14,8 +17,31 @@ const setupGame = (difficulty = 0) => {
     let currentLevel = levels[difficulty]
     let matchesLeft = currentLevel.symbols
     let lastClicked = null
+    let initTime = null
+    let timerIntervalId = null
     let eventLocked = false
     
+    const getElapsedTime = () => {
+        return (Date.now() - initTime) / 1000
+    }
+
+    const formatTime = time => {
+        const hours = Math.floor(time / 3600).toString().padStart(2, '0')
+        const minutes = Math.floor(time / 60).toString().padStart(2, '0')
+        const seconds = Math.floor(time % 60).toString().padStart(2, '0')
+
+        return `${hours}:${minutes}:${seconds}`
+    }
+
+    const updateTimer = () => {
+        timer.innerText = formatTime(getElapsedTime())
+    }
+    
+    const highlightTimer = () => {
+        timer.classList.add('timer-mutable--highlighted')
+        setTimeout(() => timer.classList.remove('timer-mutable--highlighted'), 1000)
+    }
+
     const showField = el => {
         el.classList.remove('board-field--reversed')
         el.innerHTML = `<img src="assets/${vBoard[el.dataset.fieldIndex]}.png">`
@@ -33,6 +59,11 @@ const setupGame = (difficulty = 0) => {
 
         showField(currentClicked)
 
+        if(initTime == null) {
+            initTime = Date.now()
+            timerIntervalId = setInterval(updateTimer, 1000)
+        }
+
         if(lastClicked == null) {
             lastClicked = currentClicked
             return
@@ -47,7 +78,10 @@ const setupGame = (difficulty = 0) => {
 
             matchesLeft--
 
-            if(matchesLeft == 0) setTimeout(() => { alert('Well done') }, 100)
+            if(matchesLeft == 0) {
+                clearInterval(timerIntervalId)
+                highlightTimer()
+            }
         }
         else {
             eventLocked = true
@@ -132,6 +166,6 @@ const getDifficulty = () => {
             : 2
 }
 
-playButton.addEventListener('click', () => { setupGame(getDifficulty()) })
+playButton.addEventListener('click', () => setupGame(getDifficulty()))
 
 setupGame()
