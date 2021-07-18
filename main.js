@@ -1,5 +1,6 @@
 const setupGame = (difficulty = 0) => {
     const board = document.querySelector('#board')
+    board.innerHTML = ''
 
     const vBoard = []
     const symbols = [...new Array(32).keys()]
@@ -13,6 +14,7 @@ const setupGame = (difficulty = 0) => {
     let currentLevel = levels[difficulty]
     let matchesLeft = currentLevel.symbols
     let lastClicked = null
+    let eventLocked = false
     
     const showField = el => {
         el.classList.remove('board-field--reversed')
@@ -25,28 +27,37 @@ const setupGame = (difficulty = 0) => {
     }
 
     const fieldClickEvent = async e => {
-        let currentClicked = e.target
+        if(eventLocked) return
+
+        let currentClicked = e.currentTarget
 
         showField(currentClicked)
-
-        await new Promise(r => setTimeout(r, 1000))
 
         if(lastClicked == null) {
             lastClicked = currentClicked
             return
         }
 
-        if(currentClicked.dataset.fieldIndex != lastClicked.dataset.fieldIndex && vBoard[lastClicked.dataset.fieldIndex] == vBoard[currentClicked.dataset.fieldIndex]) {
+        if(currentClicked.dataset.fieldIndex == lastClicked.dataset.fieldIndex) {
+            hideField(currentClicked)
+        }
+        else if(vBoard[lastClicked.dataset.fieldIndex] == vBoard[currentClicked.dataset.fieldIndex]) {
             currentClicked.removeEventListener('click', fieldClickEvent)
             lastClicked.removeEventListener('click', fieldClickEvent)
 
             matchesLeft--
 
-            if(matchesLeft == 0) alert('Well done')
+            if(matchesLeft == 0) setTimeout(() => { alert('Well done') }, 100)
         }
         else {
+            eventLocked = true
+
+            await new Promise(r => setTimeout(r, 1000))
+
             hideField(currentClicked)
             hideField(lastClicked)
+
+            eventLocked = false
         }
 
         lastClicked = null
@@ -87,8 +98,6 @@ const setupGame = (difficulty = 0) => {
     }
     
     const drawVBoard = () => {
-        board.innerHTML = ''
-
         const size = Math.sqrt(vBoard.length)
     
         for(let i = 0; i < size; i++) {
