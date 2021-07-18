@@ -55,6 +55,17 @@ const setupGame = (difficulty = 0) => {
         el.innerHTML = ''
     }
 
+    const previewField = el => {
+        eventLocked = true
+
+        showField(el)
+
+        setTimeout(() => {
+            hideField(el)
+            eventLocked = false
+        }, 250 * currentLevel.symbols)
+    }
+
     const fieldClickEvent = async e => {
         if(eventLocked) return
 
@@ -141,7 +152,10 @@ const setupGame = (difficulty = 0) => {
             const boardRow = createBoardRow()
     
             for(let j = 0; j < size; j++) {
-                boardRow.appendChild(createBoardField(i * size + j))
+                const field = createBoardField(i * size + j)
+                previewField(field)
+
+                boardRow.appendChild(field)
             }
     
             board.appendChild(boardRow)
