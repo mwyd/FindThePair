@@ -1,4 +1,8 @@
+let timerIntervalId = null
+
 const setupGame = (difficulty = 0) => {
+    clearInterval(timerIntervalId)
+
     const timer = document.querySelector('#timer-mutable')
     timer.innerText = '00:00:00'
 
@@ -18,7 +22,6 @@ const setupGame = (difficulty = 0) => {
     let matchesLeft = currentLevel.symbols
     let lastClicked = null
     let initTime = null
-    let timerIntervalId = null
     let eventLocked = false
     
     const getElapsedTime = () => {
