@@ -2,7 +2,7 @@ const setupGame = (difficulty = 0) => {
     const board = document.querySelector('#board')
 
     const vBoard = []
-    const symbols = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456']
+    const symbols = [...new Array(32).keys()]
     
     const levels = [
         {name: 'easy', symbols: 8},
@@ -14,6 +14,44 @@ const setupGame = (difficulty = 0) => {
     let matchesLeft = currentLevel.symbols
     let lastClicked = null
     
+    const showField = el => {
+        el.classList.remove('board-field--reversed')
+        el.innerHTML = `<img src="assets/${vBoard[el.dataset.fieldIndex]}.png">`
+    }
+
+    const hideField = el => {
+        el.classList.add('board-field--reversed')
+        el.innerHTML = ''
+    }
+
+    const fieldClickEvent = async e => {
+        let currentClicked = e.target
+
+        showField(currentClicked)
+
+        await new Promise(r => setTimeout(r, 1000))
+
+        if(lastClicked == null) {
+            lastClicked = currentClicked
+            return
+        }
+
+        if(currentClicked.dataset.fieldIndex != lastClicked.dataset.fieldIndex && vBoard[lastClicked.dataset.fieldIndex] == vBoard[currentClicked.dataset.fieldIndex]) {
+            currentClicked.removeEventListener('click', fieldClickEvent)
+            lastClicked.removeEventListener('click', fieldClickEvent)
+
+            matchesLeft--
+
+            if(matchesLeft == 0) alert('Well done')
+        }
+        else {
+            hideField(currentClicked)
+            hideField(lastClicked)
+        }
+
+        lastClicked = null
+    }
+
     const createBoardRow = () => {
         const el = document.createElement('div')
         el.classList.add('board-row')
@@ -24,37 +62,9 @@ const setupGame = (difficulty = 0) => {
     const createBoardField = id => {
         const el = document.createElement('div')
         el.classList.add('board-field', 'board-field--reversed')
+
         el.setAttribute('data-field-index', id)
-    
-        el.onclick = async e => {
-            e.target.innerText = vBoard[id]
-            e.target.classList.remove('board-field--reversed')
-    
-            await new Promise(r => setTimeout(r, 1000))
-    
-            if(lastClicked == null) {
-                lastClicked = e.target
-                return
-            }
-    
-            if(id != lastClicked.dataset.fieldIndex && vBoard[lastClicked.dataset.fieldIndex] == vBoard[id]) {
-                e.target.onclick = null
-                lastClicked.onclick = null
-    
-                matchesLeft--
-    
-                if(matchesLeft == 0) alert('Well done')
-            }
-            else {
-                e.target.innerText = ''
-                e.target.classList.add('board-field--reversed')
-    
-                lastClicked.innerText = ''
-                lastClicked.classList.add('board-field--reversed')
-            }
-    
-            lastClicked = null
-        }
+        el.addEventListener('click', fieldClickEvent)
     
         return el
     }
@@ -114,3 +124,5 @@ const getDifficulty = () => {
 }
 
 playButton.addEventListener('click', () => { setupGame(getDifficulty()) })
+
+setupGame()
