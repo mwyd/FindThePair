@@ -8,19 +8,21 @@
     <link href="main.css" rel="stylesheet">
 </head>
 <body>
-    <h2>Find the pair</h2>
-    <p class="timer">Timer: <span id="timer-mutable"></span></p>
-    <div id="board"></div>
-    <h3>Difficulty</h3>
-    <div>
-        <input name="difficulty" type="radio" id="difficulty-easy" checked>
-        <label for="difficulty-easy">easy</label>
-        <input name="difficulty" type="radio" id="difficulty-medium">
-        <label for="difficulty-medium">medium</label>
-        <input name="difficulty" type="radio" id="difficulty-hard">
-        <label for="difficulty-hard">hard</label>
+    <div class="game">
+        <h2>Find the pair</h2>
+        <p class="timer">Timer: <span id="timer-mutable"></span></p>
+        <div id="board"></div>
+        <h3>Difficulty</h3>
+        <div>
+            <input name="difficulty" type="radio" id="difficulty-easy" checked>
+            <label for="difficulty-easy">easy</label>
+            <input name="difficulty" type="radio" id="difficulty-medium">
+            <label for="difficulty-medium">medium</label>
+            <input name="difficulty" type="radio" id="difficulty-hard">
+            <label for="difficulty-hard">hard</label>
+        </div>
+        <button id="play-button">Play</button>
     </div>
-    <button id="play-button">Play</button>
     <script src="main.js"></script>
 </body>
 </html>

@@ -4,13 +4,17 @@
 
 body {
     margin: 0 auto;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     font-family: sans-serif;
+}
+
+.game {
+    text-align: center;
 }
 
 .timer {
@@ -50,5 +54,5 @@ body {
 }
 
 #play-button {
-    margin-top: 20px;
+    margin: 20px;
 }
